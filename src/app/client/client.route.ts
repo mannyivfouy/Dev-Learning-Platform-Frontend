@@ -1,0 +1,15 @@
+import { Routes } from '@angular/router';
+import { ClientLayout } from './layout/client-layout/client-layout';
+
+export const CLIENT_ROUTES: Routes = [
+  {
+    path: '',
+    component: ClientLayout,
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./home/pages/home/home').then((m) => m.Home),
+      },
+    ],
+  },
+];
