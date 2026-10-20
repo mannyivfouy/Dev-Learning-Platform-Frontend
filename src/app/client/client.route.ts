@@ -20,6 +20,10 @@ export const CLIENT_ROUTES: Routes = [
         loadComponent: () =>
           import('./courses/pages/course-detail/course-detail').then((m) => m.CourseDetail),
       },
+      {
+        path: 'courses/:courseId/learn/:lessonId',
+        loadComponent: () => import('./learning/pages/learn/learn').then((m) => m.Learn),
+      },
     ],
   },
 ];
