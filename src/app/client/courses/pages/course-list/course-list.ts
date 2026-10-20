@@ -14,11 +14,15 @@ export class CourseList implements OnInit {
   private readonly courseService = inject(CourseService);
   private readonly cdr = inject(ChangeDetectorRef);
 
-  readonly Clock = Clock
-  readonly ArrowUpRight = ArrowUpRight
-  readonly BookOpenCheck = BookOpenCheck
+  readonly Clock = Clock;
+  readonly ArrowUpRight = ArrowUpRight;
+  readonly BookOpenCheck = BookOpenCheck;
 
   courses: Course[] = [];
+  filteredCourses: Course[] = [];
+  selectedCategory = 'all';
+  categories: string[] = [];
+
   isLoading = true;
   errorMessage = '';
 
@@ -30,6 +34,8 @@ export class CourseList implements OnInit {
     this.courseService.findAll().subscribe({
       next: (response) => {
         this.courses = response.data;
+        this.filteredCourses = this.courses;
+        this.categories = [...new Set(this.courses.map((course) => course.category.name))];
         this.isLoading = false;
         this.cdr.detectChanges();
       },
@@ -41,5 +47,16 @@ export class CourseList implements OnInit {
         this.isLoading = false;
       },
     });
+  }
+
+  filterByCategory(category: string): void {
+    this.selectedCategory = category;
+
+    if (category === 'all') {
+      this.filteredCourses = this.courses;
+      return;
+    }
+
+    this.filteredCourses = this.courses.filter((course) => course.category.name === category);
   }
 }
