@@ -1,1 +1,145 @@
-<p>course-detail works!</p>
+<section class="bg-white">
+  @if (isLoading) {
+    <div class="mx-auto max-w-7xl px-5 py-20 lg:px-8">
+      <p class="text-slate-500">Loading course...</p>
+    </div>
+  } @else if (errorMessage) {
+    <div class="mx-auto max-w-7xl px-5 py-20 lg:px-8">
+      <p class="text-red-500">{{ errorMessage }}</p>
+    </div>
+  } @else if (course) {
+    <!-- Course Hero -->
+    <div class="border-b border-slate-200 bg-slate-50">
+      <div class="mx-auto max-w-7xl px-5 py-14 lg:px-8">
+        <a
+          href="/courses"
+          class="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-slate-500 transition-colors hover:text-indigo-600"
+        >
+          <lucide-icon [img]="ArrowLeft" class="size-4" />
+          Back to courses
+        </a>
+
+        <div class="grid gap-10 lg:grid-cols-[1fr_360px] lg:items-start">
+          <!-- Course Information -->
+          <div class="max-w-3xl">
+            <div class="flex flex-wrap items-center gap-3">
+              <span
+                class="rounded-full bg-indigo-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-indigo-600"
+              >
+                {{ course.category.name }}
+              </span>
+
+              <span
+                class="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold capitalize text-slate-600"
+              >
+                {{ course.level }}
+              </span>
+            </div>
+
+            <h1 class="mt-6 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+              {{ course.title }}
+            </h1>
+
+            <p class="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
+              {{ course.description }}
+            </p>
+
+            <!-- Course Stats -->
+            <div class="mt-8 flex flex-wrap gap-6 text-sm font-medium text-slate-600">
+              <div class="flex items-center gap-2">
+                <lucide-icon [img]="BookOpenCheck" class="size-5 text-indigo-600" />
+                {{ course.lesson_count }} lessons
+              </div>
+
+              @if (course.duration) {
+                <div class="flex items-center gap-2">
+                  <lucide-icon [img]="Clock" class="size-5 text-indigo-600" />
+                  {{ course.duration }} hours
+                </div>
+              }
+
+              <div class="flex items-center gap-2">
+                <lucide-icon [img]="CodeXml" class="size-5 text-indigo-600" />
+                Hands-on learning
+              </div>
+            </div>
+          </div>
+
+          <!-- Purchase Card -->
+          <div
+            class="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/50"
+          >
+            <p class="text-sm font-medium text-slate-500">Course access</p>
+
+            <div class="mt-2 flex items-end gap-1">
+              <span class="text-3xl font-bold tracking-tight text-slate-900">
+                ${{ course.price }}
+              </span>
+            </div>
+
+            <p class="mt-3 text-sm leading-6 text-slate-500">
+              Get access to this course and start learning at your own pace.
+            </p>
+
+            <button
+              type="button"
+              class="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-indigo-700"
+            >
+              <lucide-icon [img]="CreditCard" class="size-4" />
+              Get this course
+            </button>
+
+            <div class="my-5 flex items-center gap-3">
+              <div class="h-px flex-1 bg-slate-200"></div>
+              <span class="text-xs font-medium text-slate-400"> OR </span>
+              <div class="h-px flex-1 bg-slate-200"></div>
+            </div>
+
+            <a
+              href="/#pricing"
+              class="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 transition-colors hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600"
+            >
+              View subscription plans
+            </a>
+
+            <p class="mt-4 text-center text-xs leading-5 text-slate-400">
+              Subscribe to a plan to access all available courses.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Course Content -->
+    <div class="mx-auto max-w-7xl px-5 py-16 lg:px-8">
+      <div class="grid gap-10 lg:grid-cols-[1fr_360px]">
+        <div>
+          <div class="mb-6">
+            <p class="text-sm font-semibold text-indigo-600">Course content</p>
+
+            <h2 class="mt-2 text-2xl font-bold tracking-tight text-slate-900">What you'll learn</h2>
+
+            <p class="mt-3 max-w-2xl leading-7 text-slate-600">
+              Follow the lessons in order and build your knowledge step by step.
+            </p>
+          </div>
+
+          <!-- Temporary until lessons API is connected -->
+          <div class="rounded-2xl border border-slate-200 bg-white p-8 text-center">
+            <div
+              class="mx-auto flex size-12 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600"
+            >
+              <lucide-icon [img]="BookOpenCheck" class="size-5" />
+            </div>
+
+            <h3 class="mt-4 font-semibold text-slate-900">
+              {{ course.lesson_count }} lessons in this course
+            </h3>
+
+            <p class="mt-2 text-sm text-slate-500">The lesson list will appear here.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</section>

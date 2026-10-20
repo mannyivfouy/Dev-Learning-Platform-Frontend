@@ -15,4 +15,8 @@ export class CourseService {
   findAll(): Observable<ApiResponse<Course[]>> {
     return this.http.get<ApiResponse<Course[]>>(this.apiUrl);
   }
+
+  findOne(id: string): Observable<ApiResponse<Course>> {
+    return this.http.get<ApiResponse<Course>>(`${this.apiUrl}/${id}`);
+  }
 }

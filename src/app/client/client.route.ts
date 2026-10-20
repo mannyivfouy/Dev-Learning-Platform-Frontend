@@ -15,6 +15,11 @@ export const CLIENT_ROUTES: Routes = [
         loadComponent: () =>
           import('./courses/pages/course-list/course-list').then((m) => m.CourseList),
       },
+      {
+        path: 'courses/:id',
+        loadComponent: () =>
+          import('./courses/pages/course-detail/course-detail').then((m) => m.CourseDetail),
+      },
     ],
   },
 ];
