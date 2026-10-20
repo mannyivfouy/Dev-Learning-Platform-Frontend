@@ -1,0 +1,91 @@
+/* ========================================= */
+/* Technology Infinite Slider */
+/* NEW */
+/* ========================================= */
+
+.tech-marquee {
+  width: 100%;
+  overflow: hidden;
+}
+
+.tech-track {
+  display: flex;
+  width: max-content;
+  align-items: center;
+}
+
+.tech-item {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.75rem;
+
+  margin-right: 4rem;
+
+  color: #64748b;
+
+  font-size: 0.95rem;
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  transition:
+    color 200ms ease,
+    transform 200ms ease;
+}
+
+.tech-item:hover {
+  color: #4f46e5;
+  transform: scale(1.05);
+}
+
+
+/* Row 1 */
+.tech-track-left {
+  animation: marquee-left 25s linear infinite;
+}
+
+
+/* Row 2 */
+.tech-track-right {
+  animation: marquee-right 28s linear infinite;
+}
+
+
+/* Move left */
+@keyframes marquee-left {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+
+/* Move right */
+@keyframes marquee-right {
+  from {
+    transform: translateX(-50%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+
+/* Pause when hovering */
+.tech-marquee:hover .tech-track {
+  animation-play-state: paused;
+}
+
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .tech-track-left,
+  .tech-track-right {
+    animation: none;
+  }
+}
