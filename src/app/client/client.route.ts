@@ -10,6 +10,11 @@ export const CLIENT_ROUTES: Routes = [
         path: '',
         loadComponent: () => import('./home/pages/home/home').then((m) => m.Home),
       },
+      {
+        path: 'courses',
+        loadComponent: () =>
+          import('./courses/pages/course-list/course-list').then((m) => m.CourseList),
+      },
     ],
   },
 ];
