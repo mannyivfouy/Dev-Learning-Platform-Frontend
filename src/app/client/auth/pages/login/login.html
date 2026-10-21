@@ -76,7 +76,7 @@
     <button
       type="submit"
       [disabled]="isLoading"
-      class="h-11 w-full rounded-lg bg-indigo-600 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+      class="cursor-pointer h-11 w-full rounded-lg bg-indigo-600 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
     >
       @if (isLoading) {
         Signing in...
@@ -92,7 +92,7 @@
 
     <a
       routerLink="/register"
-      class="font-medium text-indigo-600 hover:text-indigo-700 cursor-pointer"
+      class=" font-medium text-indigo-600 hover:text-indigo-700 cursor-pointer"
     >
       Create an account
     </a>

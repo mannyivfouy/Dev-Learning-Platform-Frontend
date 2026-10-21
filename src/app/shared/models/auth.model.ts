@@ -1,5 +1,5 @@
-import { Student } from "./student.model";
-import { User } from "./user.model";
+import { Student } from './student.model';
+import { User } from './user.model';
 
 export interface LoginRequest {
   identifier: string;
@@ -11,6 +11,23 @@ export interface LoginResponse {
   code: number;
   data: {
     access_token: string;
-    account: User | Student
+    account: User | Student;
+  };
+}
+
+export interface RegisterRequest {
+  fullname: string;
+  username: string;
+  email: string;
+  password: string;
+  phone: string;
+}
+
+export interface RegisterResponse {
+  success: boolean;
+  code: number;
+  data: {
+    access_token: string;
+    account: Student;
   };
 }

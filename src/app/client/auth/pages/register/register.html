@@ -1,1 +1,168 @@
-<p>register works!</p>
+<!-- Heading -->
+<div class="mb-8">
+  <p class="mb-2 text-sm font-medium text-indigo-600">Get started</p>
+
+  <h2 class="text-3xl font-bold tracking-tight text-slate-900">Create your account</h2>
+
+  <p class="mt-2 text-sm text-slate-500">Start learning practical development skills today.</p>
+</div>
+
+<!-- Error message -->
+@if (errorMessage) {
+  <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+    {{ errorMessage }}
+  </div>
+}
+
+<!-- Register form -->
+<form (ngSubmit)="register()" class="space-y-5">
+  <!-- Full name -->
+  <div>
+    <label for="fullname" class="mb-2 block text-sm font-medium text-slate-700"> Full name </label>
+
+    <input
+      id="fullname"
+      name="fullname"
+      type="text"
+      [(ngModel)]="fullname"
+      placeholder="Enter your full name"
+      autocomplete="name"
+      required
+      class="h-11 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100"
+    />
+  </div>
+
+  <!-- Username -->
+  <div>
+    <label for="username" class="mb-2 block text-sm font-medium text-slate-700"> Username </label>
+
+    <input
+      id="username"
+      name="username"
+      type="text"
+      [(ngModel)]="username"
+      placeholder="Choose a username"
+      autocomplete="username"
+      required
+      class="h-11 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100"
+    />
+  </div>
+
+  <!-- Email -->
+  <div>
+    <label for="email" class="mb-2 block text-sm font-medium text-slate-700"> Email </label>
+
+    <input
+      id="email"
+      name="email"
+      type="email"
+      [(ngModel)]="email"
+      placeholder="you@example.com"
+      autocomplete="email"
+      required
+      class="h-11 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100"
+    />
+  </div>
+
+  <!-- Phone -->
+  <div>
+    <label for="phone" class="mb-2 block text-sm font-medium text-slate-700"> Phone </label>
+
+    <input
+      id="phone"
+      name="phone"
+      type="tel"
+      [(ngModel)]="phone"
+      placeholder="Enter your phone number"
+      autocomplete="tel"
+      required
+      class="h-11 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100"
+    />
+  </div>
+
+  <!-- Password -->
+  <div>
+    <label for="password" class="mb-2 block text-sm font-medium text-slate-700"> Password </label>
+
+    <div class="relative">
+      <input
+        id="password"
+        name="password"
+        [type]="showPassword ? 'text' : 'password'"
+        [(ngModel)]="password"
+        placeholder="Create a password"
+        autocomplete="new-password"
+        required
+        minlength="8"
+        class="h-11 w-full rounded-lg border border-slate-300 px-3 pr-10 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100"
+      />
+
+      <button
+        type="button"
+        (click)="showPassword = !showPassword"
+        class="cursor-pointer absolute inset-y-0 right-0 flex w-10 items-center justify-center text-slate-400 transition hover:text-slate-600"
+        [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+      >
+        @if (showPassword) {
+          <lucide-icon [img]="EyeOff" class="size-4" />
+        } @else {
+          <lucide-icon [img]="Eye" class="size-4" />
+        }
+      </button>
+    </div>
+
+    <p class="mt-1.5 text-xs text-slate-500">Password must be at least 8 characters.</p>
+  </div>
+
+  <!-- Confirm password -->
+  <div>
+    <label for="confirmPassword" class="mb-2 block text-sm font-medium text-slate-700">
+      Confirm password
+    </label>
+
+    <div class="relative">
+      <input
+        id="confirmPassword"
+        name="confirmPassword"
+        [type]="showConfirmPassword ? 'text' : 'password'"
+        [(ngModel)]="confirmPassword"
+        placeholder="Confirm your password"
+        autocomplete="new-password"
+        required
+        class="h-11 w-full rounded-lg border border-slate-300 px-3 pr-10 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100"
+      />
+
+      <button
+        type="button"
+        (click)="showConfirmPassword = !showConfirmPassword"
+        class="cursor-pointer absolute inset-y-0 right-0 flex w-10 items-center justify-center text-slate-400 transition hover:text-slate-600"
+        [attr.aria-label]="showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'"
+      >
+        @if (showConfirmPassword) {
+          <lucide-icon [img]="EyeOff" class="size-4" />
+        } @else {
+          <lucide-icon [img]="Eye" class="size-4" />
+        }
+      </button>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <button
+    type="submit"
+    [disabled]="isLoading"
+    class="cursor-pointer flex h-11 w-full items-center justify-center rounded-lg bg-indigo-600 px-4 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+  >
+    @if (isLoading) {
+      Creating account...
+    } @else {
+      Create account
+    }
+  </button>
+</form>
+
+<!-- Login link -->
+<p class="cursor-pointer mt-6 text-center text-sm text-slate-500">
+  Already have an account?
+  <a routerLink="/login" class="font-medium text-indigo-600 hover:text-indigo-700"> Sign in </a>
+</p>
