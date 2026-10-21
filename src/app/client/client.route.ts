@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { ClientLayout } from './layout/client-layout/client-layout';
+import { authGuard } from '../core/guards/auth-guard';
 
 export const CLIENT_ROUTES: Routes = [
   // Auth pages
@@ -40,6 +41,7 @@ export const CLIENT_ROUTES: Routes = [
   // Learning page
   {
     path: 'courses/:courseId/learn/:lessonId',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./learning/pages/learn/learn').then(
         (m) => m.Learn,
