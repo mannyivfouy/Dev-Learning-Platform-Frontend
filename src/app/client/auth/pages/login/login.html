@@ -1,0 +1,100 @@
+<div>
+  <!-- Heading -->
+  <div class="mb-8">
+    <p class="mb-2 text-sm font-medium text-indigo-600">Welcome back</p>
+
+    <h1 class="text-3xl font-bold tracking-tight text-slate-900">Sign in to your account</h1>
+
+    <p class="mt-2 text-sm text-slate-500">Continue your learning journey with DevLearn.</p>
+  </div>
+
+  <!-- Login Form -->
+  <form class="space-y-5" (ngSubmit)="login()">
+    <!-- Error Message -->
+    @if (errorMessage) {
+      <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3">
+        <p class="text-sm text-red-600">
+          {{ errorMessage }}
+        </p>
+      </div>
+    }
+
+    <!-- Username / Email -->
+    <div>
+      <label for="identifier" class="mb-2 block text-sm font-medium text-slate-700">
+        Username or email
+      </label>
+
+      <input
+        id="identifier"
+        name="identifier"
+        type="text"
+        [(ngModel)]="identifier"
+        placeholder="Enter your username or email"
+        autocomplete="username"
+        class="h-11 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100"
+      />
+    </div>
+
+    <!-- Password -->
+    <div>
+      <div class="mb-2 flex items-center justify-between">
+        <label for="password" class="block text-sm font-medium text-slate-700"> Password </label>
+
+        <a href="#" class="text-sm font-medium text-indigo-600 hover:text-indigo-700">
+          Forgot password?
+        </a>
+      </div>
+
+      <div class="relative">
+        <input
+          id="password"
+          name="password"
+          [type]="showPassword ? 'text' : 'password'"
+          [(ngModel)]="password"
+          placeholder="Enter your password"
+          autocomplete="current-password"
+          class="h-11 w-full rounded-lg border border-slate-300 px-3 pr-10 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100"
+        />
+
+        <button
+          type="button"
+          (click)="showPassword = !showPassword"
+          class="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-slate-400 transition hover:text-slate-600 cursor-pointer"
+          [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+        >
+          @if (showPassword) {
+            <lucide-icon [img]="EyeOff" class="size-4" />
+          } @else {
+            <lucide-icon [img]="Eye" class="size-4" />
+          }
+        </button>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <button
+      type="submit"
+      [disabled]="isLoading"
+      class="h-11 w-full rounded-lg bg-indigo-600 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+    >
+      @if (isLoading) {
+        Signing in...
+      } @else {
+        Sign in
+      }
+    </button>
+  </form>
+
+  <!-- Register -->
+  <p class="mt-6 text-center text-sm text-slate-500">
+    Don't have an account?
+
+    <a
+      routerLink="/register"
+      class="font-medium text-indigo-600 hover:text-indigo-700 cursor-pointer"
+    >
+      Create an account
+    </a>
+  </p>
+</div>
