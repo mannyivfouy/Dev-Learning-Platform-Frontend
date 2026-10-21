@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import {
   ArrowRight,
@@ -24,12 +24,14 @@ import {
 import {
   siAngular,
   siCss,
+  siDart,
   siDocker,
   siGit,
   siGithub,
   siHtml5,
   siJavascript,
   siMongodb,
+  siMysql,
   siNestjs,
   siNodedotjs,
   siPhp,
@@ -37,6 +39,7 @@ import {
   siTailwindcss,
   siTypescript,
 } from 'simple-icons';
+import { AuthService } from '../../../../core/services/auth';
 
 @Component({
   selector: 'app-home',
@@ -45,6 +48,8 @@ import {
   styleUrl: './home.css',
 })
 export class Home {
+  private readonly authService = inject(AuthService);
+
   readonly ArrowRight = ArrowRight;
   readonly BookOpen = BookOpen;
   readonly CodeXml = CodeXml;
@@ -62,7 +67,7 @@ export class Home {
   readonly LaptopCode = Laptop;
   readonly TrendingUp = TrendingUp;
   readonly Check = Check;
-readonly Crown = Crown;
+  readonly Crown = Crown;
 
   // NEW: First technology row
   readonly technologiesRowOne = [
@@ -73,6 +78,7 @@ readonly Crown = Crown;
     { name: 'Angular', icon: siAngular },
     { name: 'Tailwind CSS', icon: siTailwindcss },
     { name: 'Php', icon: siPhp },
+    { name: 'Dart', icon: siDart },
   ];
 
   // NEW: Second technology row
@@ -84,7 +90,12 @@ readonly Crown = Crown;
     { name: 'Git', icon: siGit },
     { name: 'GitHub', icon: siGithub },
     { name: 'Docker', icon: siDocker },
+    { name: 'MySQL', icon: siMysql }
   ];
+
+  get isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
 
   courses = [
     {

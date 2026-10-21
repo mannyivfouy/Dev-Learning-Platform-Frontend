@@ -1,14 +1,27 @@
-<header class="sticky top-0 z-50 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl">
-  <nav class="mx-auto flex h-18 max-w-7xl items-center justify-between px-5 lg:px-8">
+<header
+  class="sticky top-0 z-50 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl"
+>
+  <nav
+    class="mx-auto flex h-18 max-w-7xl items-center justify-between px-5 lg:px-8"
+  >
     <!-- Logo -->
-    <a routerLink="/" class="flex items-center gap-2.5" (click)="closeMenu()">
+    <a
+      routerLink="/"
+      class="flex items-center gap-2.5"
+      (click)="closeMenu()"
+    >
       <span
         class="flex size-9 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-sm"
       >
-        <lucide-icon [img]="CodeXml" [size]="20" [strokeWidth]="2.2" />
+        <lucide-icon
+          [img]="CodeXml"
+          class="size-5"
+        />
       </span>
 
-      <span class="text-lg font-bold tracking-tight text-slate-900"> DevLearningPlatform </span>
+      <span class="text-lg font-bold tracking-tight text-slate-900">
+        DevLearningPlatform
+      </span>
     </a>
 
     <!-- Desktop Navigation -->
@@ -41,19 +54,134 @@
 
     <!-- Desktop Actions -->
     <div class="hidden items-center gap-3 md:flex">
-      <a
-        routerLink="/login"
-        class="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 transition-colors duration-200 hover:bg-indigo-50 hover:text-indigo-600"
-      >
-        Log in
-      </a>
 
-      <a
-        routerLink="/register"
-        class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-indigo-700 hover:shadow-md"
-      >
-        Get Started
-      </a>
+      <!-- Logged out -->
+      @if (!isLoggedIn) {
+        <a
+          routerLink="/login"
+          class="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 transition-colors duration-200 hover:bg-indigo-50 hover:text-indigo-600"
+        >
+          Log in
+        </a>
+
+        <a
+          routerLink="/register"
+          class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-indigo-700 hover:shadow-md"
+        >
+          Get Started
+        </a>
+      }
+
+      <!-- Logged in -->
+      @if (isLoggedIn) {
+        <div class="relative">
+
+          <!-- Profile button -->
+          <button
+            type="button"
+            (click)="toggleProfile()"
+            class="cursor-pointer flex items-center gap-2 rounded-xl px-2 py-1.5 transition-colors duration-200 hover:bg-slate-100"
+            [attr.aria-expanded]="isProfileOpen"
+            aria-label="Open profile menu"
+          >
+            <!-- Avatar -->
+            @if (currentStudent?.avatar) {
+              <img
+                [src]="currentStudent?.avatar"
+                [alt]="currentStudent?.fullname"
+                class="size-9 rounded-full object-cover"
+              />
+            } @else {
+              <span
+                class="flex size-9 items-center justify-center rounded-full bg-indigo-100 text-sm font-semibold text-indigo-600"
+              >
+                {{ currentStudent?.fullname?.charAt(0)?.toUpperCase() }}
+              </span>
+            }
+
+            <span class="max-w-32 truncate text-sm font-semibold text-slate-700">
+              {{ currentStudent?.fullname }}
+            </span>
+
+            <lucide-icon
+              [img]="ChevronDown"
+              class="size-4 text-slate-400"
+            />
+          </button>
+
+          <!-- Profile dropdown -->
+          @if (isProfileOpen) {
+            <div
+              class="absolute right-0 mt-2 w-64 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg"
+            >
+              <!-- Account -->
+              <div class="border-b border-slate-100 px-4 py-3">
+                <p class="truncate text-sm font-semibold text-slate-900">
+                  {{ currentStudent?.fullname }}
+                </p>
+
+                <p class="mt-0.5 truncate text-xs text-slate-500">
+                  {{ currentStudent?.email }}
+                </p>
+              </div>
+
+              <!-- Menu -->
+              <div class="p-2">
+                <a
+                  routerLink="/dashboard"
+                  (click)="closeProfile()"
+                  class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
+                >
+                  <lucide-icon
+                    [img]="LayoutDashboard"
+                    class="size-4"
+                  />
+                  <span>Dashboard</span>
+                </a>
+
+                <a
+                  routerLink="/dashboard/courses"
+                  (click)="closeProfile()"
+                  class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
+                >
+                  <lucide-icon
+                    [img]="BookOpen"
+                    class="size-4"
+                  />
+                  <span>My Courses</span>
+                </a>
+
+                <a
+                  routerLink="/dashboard/profile"
+                  (click)="closeProfile()"
+                  class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
+                >
+                  <lucide-icon
+                    [img]="User"
+                    class="size-4"
+                  />
+                  <span>Profile</span>
+                </a>
+              </div>
+
+              <!-- Logout -->
+              <div class="border-t border-slate-100 p-2">
+                <button
+                  type="button"
+                  (click)="logout()"
+                  class="cursor-pointer flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-red-50 hover:text-red-600"
+                >
+                  <lucide-icon
+                    [img]="LogOut"
+                    class="size-4"
+                  />
+                  <span>Log out</span>
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      }
     </div>
 
     <!-- Mobile Menu Button -->
@@ -64,17 +192,27 @@
       [attr.aria-label]="isMenuOpen ? 'Close menu' : 'Open menu'"
     >
       @if (isMenuOpen) {
-        <lucide-icon [img]="X" [size]="22" [strokeWidth]="2" />
+        <lucide-icon
+          [img]="X"
+          class="size-5.5"
+        />
       } @else {
-        <lucide-icon [img]="Menu" [size]="22" [strokeWidth]="2" />
+        <lucide-icon
+          [img]="Menu"
+          class="size-5.5"
+        />
       }
     </button>
   </nav>
 
   <!-- Mobile Navigation -->
   @if (isMenuOpen) {
-    <div class="border-t border-slate-200/70 bg-white/95 px-5 py-5 backdrop-blur-xl md:hidden">
+    <div
+      class="border-t border-slate-200/70 bg-white/95 px-5 py-5 backdrop-blur-xl md:hidden"
+    >
       <div class="mx-auto flex max-w-7xl flex-col gap-1">
+
+        <!-- Navigation -->
         <a
           routerLink="/"
           routerLinkActive="bg-indigo-50 text-indigo-600"
@@ -105,21 +243,102 @@
 
         <div class="my-3 border-t border-slate-200"></div>
 
-        <a
-          routerLink="/login"
-          class="rounded-xl px-4 py-3 text-center text-sm font-semibold text-slate-600 transition-colors duration-200 hover:bg-indigo-50 hover:text-indigo-600"
-          (click)="closeMenu()"
-        >
-          Log in
-        </a>
+        <!-- Mobile logged out -->
+        @if (!isLoggedIn) {
+          <a
+            routerLink="/login"
+            class="rounded-xl px-4 py-3 text-center text-sm font-semibold text-slate-600 transition-colors duration-200 hover:bg-indigo-50 hover:text-indigo-600"
+            (click)="closeMenu()"
+          >
+            Log in
+          </a>
 
-        <a
-          routerLink="/register"
-          class="mt-1 rounded-xl bg-indigo-600 px-4 py-3 text-center text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-indigo-700 hover:shadow-md"
-          (click)="closeMenu()"
-        >
-          Get Started
-        </a>
+          <a
+            routerLink="/register"
+            class="mt-1 rounded-xl bg-indigo-600 px-4 py-3 text-center text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-indigo-700 hover:shadow-md"
+            (click)="closeMenu()"
+          >
+            Get Started
+          </a>
+        }
+
+        <!-- Mobile logged in -->
+        @if (isLoggedIn) {
+          <!-- Student account -->
+          <div class="mb-2 flex items-center gap-3 px-4 py-2">
+            @if (currentStudent?.avatar) {
+              <img
+                [src]="currentStudent?.avatar"
+                [alt]="currentStudent?.fullname"
+                class="size-10 rounded-full object-cover"
+              />
+            } @else {
+              <span
+                class="flex size-10 items-center justify-center rounded-full bg-indigo-100 text-sm font-semibold text-indigo-600"
+              >
+                {{ currentStudent?.fullname?.charAt(0)?.toUpperCase() }}
+              </span>
+            }
+
+            <div class="min-w-0">
+              <p class="truncate text-sm font-semibold text-slate-900">
+                {{ currentStudent?.fullname }}
+              </p>
+
+              <p class="truncate text-xs text-slate-500">
+                {{ currentStudent?.email }}
+              </p>
+            </div>
+          </div>
+
+          <a
+            routerLink="/dashboard"
+            class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
+            (click)="closeMenu()"
+          >
+            <lucide-icon
+              [img]="LayoutDashboard"
+              class="size-4"
+            />
+            Dashboard
+          </a>
+
+          <a
+            routerLink="/dashboard/courses"
+            class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
+            (click)="closeMenu()"
+          >
+            <lucide-icon
+              [img]="BookOpen"
+              class="size-4"
+            />
+            My Courses
+          </a>
+
+          <a
+            routerLink="/dashboard/profile"
+            class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
+            (click)="closeMenu()"
+          >
+            <lucide-icon
+              [img]="User"
+              class="size-4"
+            />
+            Profile
+          </a>
+
+          <button
+            type="button"
+            (click)="logout()"
+            class="mt-1 flex items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
+          >
+            <lucide-icon
+              [img]="LogOut"
+              class="size-4"
+            />
+            Log out
+          </button>
+        }
       </div>
     </div>
   }
