@@ -1,1 +1,156 @@
-<p>learn works!</p>
+<div class="min-h-screen bg-slate-50">
+  <!-- Top learning header -->
+  <header class="sticky top-0 z-20 border-b border-slate-200 bg-white">
+    <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 lg:px-8">
+      <div class="flex min-w-0 items-center gap-4">
+        <a
+          [routerLink]="['/courses', courseId]"
+          class="flex shrink-0 items-center gap-2 text-sm font-semibold text-slate-600 transition-colors hover:text-indigo-600"
+        >
+          <lucide-icon [img]="ArrowLeft" class="size-4" />
+          <span class="hidden sm:inline">Back to course</span>
+        </a>
+
+        <div class="hidden h-5 w-px bg-slate-200 sm:block"></div>
+
+        @if (currentLesson?.course) {
+          <p class="truncate text-sm font-semibold text-slate-900">
+            {{ currentLesson?.course?.title }}
+          </p>
+        }
+      </div>
+
+      <div class="hidden items-center gap-2 text-sm text-slate-500 sm:flex">
+        <lucide-icon [img]="BookOpenCheck" class="size-4" />
+        <span>{{ lessons.length }} lessons</span>
+      </div>
+    </div>
+  </header>
+
+  @if (isLoading) {
+    <!-- Loading -->
+    <div class="flex min-h-[calc(100vh-4rem)] items-center justify-center">
+      <div class="text-center">
+        <div
+          class="mx-auto size-8 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-600"
+        ></div>
+
+        <p class="mt-4 text-sm font-medium text-slate-500">Loading lesson...</p>
+      </div>
+    </div>
+  } @else if (errorMessage) {
+    <!-- Error -->
+    <div class="flex min-h-[calc(100vh-4rem)] items-center justify-center px-5">
+      <div class="text-center">
+        <div
+          class="mx-auto flex size-12 items-center justify-center rounded-xl bg-red-50 text-red-500"
+        >
+          <lucide-icon [img]="BookOpenCheck" class="size-5" />
+        </div>
+
+        <h2 class="mt-4 font-semibold text-slate-900">Unable to load lesson</h2>
+
+        <p class="mt-2 text-sm text-slate-500">
+          {{ errorMessage }}
+        </p>
+
+        <a
+          [routerLink]="['/courses', courseId]"
+          class="mt-5 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-700"
+        >
+          <lucide-icon [img]="ArrowLeft" class="size-4" />
+          Back to course
+        </a>
+      </div>
+    </div>
+  } @else if (currentLesson) {
+    <!-- Learning workspace -->
+    <div class="mx-auto flex max-w-7xl px-5 lg:px-8">
+      <!-- Sidebar -->
+      <aside class="hidden w-72 shrink-0 border-r border-slate-200 pr-6 lg:block">
+        <div class="sticky top-24 py-8">
+          <p class="mb-4 text-xs font-bold uppercase tracking-wider text-slate-400">
+            Course content
+          </p>
+
+          <nav class="space-y-1">
+            @for (lesson of lessons; track lesson.id) {
+              <a
+                [routerLink]="['/courses', courseId, 'learn', lesson.id]"
+                class="group flex items-start gap-3 rounded-xl px-3 py-3 transition-colors"
+                [class.bg-indigo-50]="lesson.id === currentLesson.id"
+                [class.text-indigo-600]="lesson.id === currentLesson.id"
+                [class.text-slate-600]="lesson.id !== currentLesson.id"
+                [class.hover:bg-slate-100]="lesson.id !== currentLesson.id"
+              >
+                <span
+                  class="flex size-7 shrink-0 items-center justify-center rounded-lg text-xs font-bold"
+                  [class.bg-indigo-600]="lesson.id === currentLesson.id"
+                  [class.text-white]="lesson.id === currentLesson.id"
+                  [class.bg-slate-100]="lesson.id !== currentLesson.id"
+                  [class.text-slate-500]="lesson.id !== currentLesson.id"
+                >
+                  {{ lesson.lesson_order }}
+                </span>
+
+                <span
+                  class="pt-1 text-sm font-medium leading-5"
+                  [class.font-semibold]="lesson.id === currentLesson.id"
+                >
+                  {{ lesson.title }}
+                </span>
+              </a>
+            }
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <main class="min-w-0 flex-1 lg:pl-10">
+        <div class="mx-auto max-w-4xl py-8 lg:py-12">
+          <!-- Lesson heading -->
+          <div>
+            <p class="text-sm font-semibold text-indigo-600">
+              Lesson {{ currentLesson.lesson_order }}
+            </p>
+
+            <h1 class="mt-2 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+              {{ currentLesson.title }}
+            </h1>
+          </div>
+
+          <!-- Lesson content -->
+          <article
+            class="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 lg:p-10"
+          >
+            <div class="whitespace-pre-wrap text-[15px] leading-8 text-slate-600">
+              {{ currentLesson.content }}
+            </div>
+          </article>
+
+          <!-- Navigation -->
+          <div class="mt-8 flex items-center justify-between gap-4 border-t border-slate-200 pt-6">
+            <button
+              type="button"
+              (click)="goToPreviousLesson()"
+              class="cursor-pointer inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+              [disabled]="lessons.findIndex((lesson) => lesson.id === currentLesson?.id) === 0"
+            >
+              <lucide-icon [img]="ChevronLeft" class="size-4" />
+              Previous
+            </button>
+
+            <button
+              type="button"
+              (click)="goToNextLesson()"
+              class="cursor-pointer inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-700"
+            >
+              Next lesson
+              <lucide-icon [img]="ChevronRight" class="size-4" />
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+  }
+</div>

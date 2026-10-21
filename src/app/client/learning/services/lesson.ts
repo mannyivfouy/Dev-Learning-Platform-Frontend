@@ -12,8 +12,11 @@ export class LessonService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.api_url}/lessons`;
 
-
   findByCourse(courseId: string): Observable<ApiResponse<Lesson[]>> {
     return this.http.get<ApiResponse<Lesson[]>>(`${this.apiUrl}/course/${courseId}`);
+  }
+
+  findOne(id: string): Observable<ApiResponse<Lesson>> {
+    return this.http.get<ApiResponse<Lesson>>(`${this.apiUrl}/${id}`);
   }
 }

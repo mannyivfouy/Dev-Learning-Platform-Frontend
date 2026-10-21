@@ -1,3 +1,5 @@
+import { Course } from "./course.model";
+
 export interface Lesson {
   id: string;
   course_id: string;
@@ -8,4 +10,5 @@ export interface Lesson {
   status: 'draft' | 'published';
   created_at: string;
   updated_at: string;
+  course?: Course
 }
