@@ -2,7 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { StorageService } from './storage';
 import { environment } from '../../../environments/environment';
-import { LoginRequest, LoginResponse } from '../../shared/models/auth.model';
+import {
+  LoginRequest,
+  LoginResponse,
+  RegisterRequest,
+  RegisterResponse,
+} from '../../shared/models/auth.model';
 import { Observable, tap } from 'rxjs';
 import { Student } from '../../shared/models/student.model';
 import { User } from '../../shared/models/user.model';
@@ -17,6 +22,15 @@ export class AuthService {
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
+      tap((response) => {
+        this.storageService.setToken(response.data.access_token);
+        this.storageService.setUser(response.data.account);
+      }),
+    );
+  }
+
+  register(data: RegisterRequest): Observable<RegisterResponse> {
+    return this.http.post<RegisterResponse>(`${this.apiUrl}/register`, data).pipe(
       tap((response) => {
         this.storageService.setToken(response.data.access_token);
         this.storageService.setUser(response.data.account);
