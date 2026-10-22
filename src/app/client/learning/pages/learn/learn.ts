@@ -34,36 +34,46 @@ export class Learn implements OnInit {
   currentLesson: Lesson | null = null;
   isLoading = true;
   errorMessage = '';
+  errorType: 'access' | 'general' | '' = '';
 
-ngOnInit(): void {
-  this.route.paramMap.subscribe((params) => {
-    this.courseId = params.get('courseId') ?? '';
-    this.lessonId = params.get('lessonId') ?? '';
+  ngOnInit(): void {
+    this.route.paramMap.subscribe((params) => {
+      this.courseId = params.get('courseId') ?? '';
+      this.lessonId = params.get('lessonId') ?? '';
 
-    this.loadLesson();
-    this.loadLessons();
-  });
-}
-
-  private loadLesson(): void {
-    this.lessonService.findOne(this.lessonId).subscribe({
-      next: (response) => {
-        this.currentLesson = response.data;
-        this.isLoading = false;
-        this.cdr.detectChanges();
-      },
-      error: (error) => {
-        console.error('Failed to load lesson:', error);
-
-        this.errorMessage = 'Unable to load lesson.';
-        this.isLoading = false;
-
-        this.cdr.detectChanges();
-      },
+      this.loadLesson();
+      this.loadLessons();
     });
   }
 
-  // CHANGED
+  private loadLesson(): void {
+  this.lessonService.findOne(this.lessonId).subscribe({
+    next: (response) => {
+      this.currentLesson = response.data;
+      this.isLoading = false;
+      this.cdr.detectChanges();
+    },
+
+    // CHANGED
+    error: (error) => {
+      if (error.status === 403) {
+        this.errorType = 'access';
+        this.errorMessage =
+          'You need to enroll in this course to access this lesson.';
+      } else {
+        console.error('Failed to load lesson:', error);
+
+        this.errorType = 'general';
+        this.errorMessage = 'Unable to load lesson.';
+      }
+
+      this.isLoading = false;
+
+      this.cdr.detectChanges();
+    },
+  });
+}
+
   private loadLessons(): void {
     this.lessonService.findByCourse(this.courseId).subscribe({
       next: (response) => {
@@ -71,7 +81,10 @@ ngOnInit(): void {
       },
       error: (error) => {
         console.error('Failed to load course lessons:', error);
+
+        this.errorType = 'general';
         this.errorMessage = 'Unable to load lessons.';
+
         this.isLoading = false;
       },
     });

@@ -42,18 +42,32 @@
     <!-- Error -->
     <div class="flex min-h-[calc(100vh-4rem)] items-center justify-center px-5">
       <div class="text-center">
+        <!-- Icon -->
         <div
-          class="mx-auto flex size-12 items-center justify-center rounded-xl bg-red-50 text-red-500"
+          class="mx-auto flex size-12 items-center justify-center rounded-xl"
+          [class.bg-amber-50]="errorType === 'access'"
+          [class.text-amber-500]="errorType === 'access'"
+          [class.bg-red-50]="errorType === 'general'"
+          [class.text-red-500]="errorType === 'general'"
         >
           <lucide-icon [img]="BookOpenCheck" class="size-5" />
         </div>
 
-        <h2 class="mt-4 font-semibold text-slate-900">Unable to load lesson</h2>
+        <!-- Title -->
+        <h2 class="mt-4 font-semibold text-slate-900">
+          @if (errorType === 'access') {
+            Access required
+          } @else {
+            Unable to load lesson
+          }
+        </h2>
 
+        <!-- Message -->
         <p class="mt-2 text-sm text-slate-500">
           {{ errorMessage }}
         </p>
 
+        <!-- Back button -->
         <a
           [routerLink]="['/courses', courseId]"
           class="mt-5 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-700"
