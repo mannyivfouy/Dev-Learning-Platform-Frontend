@@ -63,6 +63,10 @@ export class AuthService {
     return this.storageService.getUser<Student>();
   }
 
+  updateCurrentStudent(student: Student): void {
+    this.storageService.setUser(student);
+  }
+
   getCurrentUser(): User | null {
     return this.storageService.getUser<User>();
   }
