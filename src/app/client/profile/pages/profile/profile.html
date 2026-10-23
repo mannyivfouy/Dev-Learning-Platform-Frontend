@@ -1,1 +1,416 @@
-<p>profile works!</p>
+<div class="mx-auto max-w-5xl px-5 py-10 lg:px-8">
+  <!-- Header -->
+  <div class="mb-8">
+    <p class="mb-2 text-sm font-medium text-indigo-600">Account</p>
+
+    <div class="flex items-center justify-between gap-4">
+      <div>
+        <h1 class="text-3xl font-bold tracking-tight text-slate-900">My Profile</h1>
+
+        <p class="mt-2 text-slate-500">Manage your personal information and account details.</p>
+      </div>
+
+      <!-- Edit Button -->
+      @if (student && !isEditing) {
+        <button
+          type="button"
+          (click)="startEditing()"
+          class="cursor-pointer rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+        >
+          Edit Profile
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Loading -->
+  @if (!student) {
+    <div class="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+      <p class="text-sm text-slate-500">Loading your profile...</p>
+    </div>
+  }
+
+  <!-- ===================================================== -->
+  <!-- Normal Profile View -->
+  <!-- ===================================================== -->
+
+  @if (student && !isEditing) {
+    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <!-- Profile Header -->
+      <div class="border-b border-slate-200 bg-slate-50 px-6 py-8 sm:px-8">
+        <div class="flex items-center gap-5">
+          <!-- Avatar -->
+          <div class="flex flex-col items-center gap-2">
+            <div
+              class="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-indigo-100 text-2xl font-bold text-indigo-600"
+            >
+              @if (student.avatar) {
+                <img
+                  [src]="student.avatar"
+                  [alt]="student.fullname"
+                  class="h-full w-full object-cover"
+                />
+              } @else {
+                {{ student.fullname.charAt(0).toUpperCase() }}
+              }
+            </div>
+
+            <!-- NEW: Hidden file input -->
+            <input
+              #avatarInput
+              type="file"
+              accept="image/*"
+              hidden
+              (change)="onAvatarSelected($event)"
+            />
+
+            <!-- NEW: Change avatar button -->
+            <button
+              type="button"
+              (click)="avatarInput.click()"
+              class="cursor-pointer text-xs font-medium text-indigo-600 transition hover:text-indigo-700"
+            >
+              Change avatar
+            </button>
+          </div>
+
+          <!-- Student Info -->
+          <div>
+            <h2 class="text-xl font-semibold text-slate-900">
+              {{ student.fullname }}
+            </h2>
+
+            <p class="mt-1 text-sm text-slate-500">
+              {{ student.email }}
+            </p>
+
+            <!-- Status -->
+            <span
+              class="mt-3 inline-flex w-fit items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold capitalize text-emerald-700"
+            >
+              <span class="size-1.5 rounded-full bg-emerald-500"></span>
+              {{ student.status }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Personal Information -->
+      <div class="px-6 py-8 sm:px-8">
+        <h3 class="mb-6 text-lg font-semibold text-slate-900">Personal Information</h3>
+
+        <div class="grid gap-6 sm:grid-cols-2">
+          <!-- Full Name -->
+          <div>
+            <p class="mb-1 text-sm font-medium text-slate-500">Full name</p>
+
+            <p class="text-sm font-medium text-slate-900">
+              {{ student.fullname }}
+            </p>
+          </div>
+
+          <!-- Username -->
+          <div>
+            <p class="mb-1 text-sm font-medium text-slate-500">Username</p>
+
+            <p class="text-sm font-medium text-slate-900">
+              {{ student.username }}
+            </p>
+          </div>
+
+          <!-- Email -->
+          <div>
+            <p class="mb-1 text-sm font-medium text-slate-500">Email</p>
+
+            <p class="text-sm font-medium text-slate-900">
+              {{ student.email }}
+            </p>
+          </div>
+
+          <!-- Phone -->
+          <div>
+            <p class="mb-1 text-sm font-medium text-slate-500">Phone</p>
+
+            <p class="text-sm font-medium text-slate-900">
+              {{ student.phone || 'Not provided' }}
+            </p>
+          </div>
+
+          <!-- Member Since -->
+          <div>
+            <p class="mb-1 text-sm font-medium text-slate-500">Member since</p>
+
+            <p class="text-sm font-medium text-slate-900">
+              {{ student.created_at | date: 'MMM d, yyyy' }}
+            </p>
+          </div>
+
+          <!-- Last Login -->
+          <div>
+            <p class="mb-1 text-sm font-medium text-slate-500">Last login</p>
+
+            <p class="text-sm font-medium text-slate-900">
+              {{
+                student.last_login_at
+                  ? (student.last_login_at | date: 'MMM d, yyyy, h:mm a')
+                  : 'Not available'
+              }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ===================================================== -->
+  <!-- Edit Profile Form -->
+  <!-- ===================================================== -->
+
+  @if (student && isEditing) {
+    <form
+      [formGroup]="editForm"
+      (ngSubmit)="saveProfile()"
+      class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+    >
+      <!-- Header -->
+      <div class="border-b border-slate-200 bg-slate-50 px-6 py-6 sm:px-8">
+        <h2 class="text-lg font-semibold text-slate-900">Edit Profile</h2>
+
+        <p class="mt-1 text-sm text-slate-500">Update your personal information.</p>
+      </div>
+
+      <div class="space-y-8 px-6 py-8 sm:px-8">
+        <!-- Personal Information -->
+        <div>
+          <h3 class="mb-5 text-sm font-semibold text-slate-900">Personal Information</h3>
+
+          <div class="grid gap-5 sm:grid-cols-2">
+            <!-- Full Name -->
+            <div>
+              <label for="fullname" class="mb-2 block text-sm font-medium text-slate-700">
+                Full name
+              </label>
+
+              <input
+                id="fullname"
+                type="text"
+                formControlName="fullname"
+                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              />
+
+              @if (
+                editForm.controls.fullname.touched &&
+                editForm.controls.fullname.hasError('required')
+              ) {
+                <p class="mt-1.5 text-xs text-red-500">Full name is required.</p>
+              }
+
+              @if (
+                editForm.controls.fullname.touched &&
+                editForm.controls.fullname.hasError('maxlength')
+              ) {
+                <p class="mt-1.5 text-xs text-red-500">Full name cannot exceed 100 characters.</p>
+              }
+            </div>
+
+            <!-- Username -->
+            <div>
+              <label for="username" class="mb-2 block text-sm font-medium text-slate-700">
+                Username
+              </label>
+
+              <input
+                id="username"
+                type="text"
+                formControlName="username"
+                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              />
+
+              @if (
+                editForm.controls.username.touched &&
+                editForm.controls.username.hasError('required')
+              ) {
+                <p class="mt-1.5 text-xs text-red-500">Username is required.</p>
+              }
+
+              @if (
+                editForm.controls.username.touched &&
+                editForm.controls.username.hasError('maxlength')
+              ) {
+                <p class="mt-1.5 text-xs text-red-500">Username cannot exceed 50 characters.</p>
+              }
+            </div>
+
+            <!-- Email -->
+            <div>
+              <label for="email" class="mb-2 block text-sm font-medium text-slate-700">
+                Email
+              </label>
+
+              <input
+                id="email"
+                type="email"
+                formControlName="email"
+                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              />
+
+              @if (
+                editForm.controls.email.touched && editForm.controls.email.hasError('required')
+              ) {
+                <p class="mt-1.5 text-xs text-red-500">Email is required.</p>
+              }
+
+              @if (editForm.controls.email.touched && editForm.controls.email.hasError('email')) {
+                <p class="mt-1.5 text-xs text-red-500">Enter a valid email address.</p>
+              }
+            </div>
+
+            <!-- Phone -->
+            <div>
+              <label for="phone" class="mb-2 block text-sm font-medium text-slate-700">
+                Phone
+              </label>
+
+              <input
+                id="phone"
+                type="tel"
+                formControlName="phone"
+                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              />
+
+              @if (
+                editForm.controls.phone.touched && editForm.controls.phone.hasError('required')
+              ) {
+                <p class="mt-1.5 text-xs text-red-500">Phone is required.</p>
+              }
+
+              @if (
+                editForm.controls.phone.touched && editForm.controls.phone.hasError('maxlength')
+              ) {
+                <p class="mt-1.5 text-xs text-red-500">Phone cannot exceed 20 characters.</p>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="border-t border-slate-200 pt-8">
+          <div class="mb-5">
+            <h3 class="text-sm font-semibold text-slate-900">Change Password</h3>
+
+            <p class="mt-1 text-sm text-slate-500">
+              Leave these fields empty if you don't want to change your password.
+            </p>
+          </div>
+
+          <div class="grid gap-5 sm:grid-cols-2">
+            <!-- New Password -->
+            <div>
+              <label for="password" class="mb-2 block text-sm font-medium text-slate-700">
+                New password
+              </label>
+
+              <div class="relative">
+                <input
+                  #passwordInput
+                  id="password"
+                  type="password"
+                  formControlName="password"
+                  placeholder="Enter new password"
+                  class="w-full rounded-xl border border-slate-200 px-4 py-3 pr-11 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                />
+
+                <button
+                  type="button"
+                  (click)="
+                    passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password'
+                  "
+                  class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-slate-400 transition hover:text-slate-600"
+                >
+                  @if (passwordInput.type === 'password') {
+                    <lucide-icon [img]="Eye" class="size-5"></lucide-icon>
+                  } @else {
+                    <lucide-icon [img]="EyeOff" class="size-5"></lucide-icon>
+                  }
+                </button>
+              </div>
+
+              @if (
+                editForm.controls.password.touched &&
+                editForm.controls.password.hasError('minlength')
+              ) {
+                <p class="mt-1.5 text-xs text-red-500">Password must be at least 8 characters.</p>
+              }
+            </div>
+
+            <!-- Confirm Password -->
+            <div>
+              <label for="confirmPassword" class="mb-2 block text-sm font-medium text-slate-700">
+                Confirm password
+              </label>
+
+              <div class="relative">
+                <input
+                  #confirmPasswordInput
+                  id="confirmPassword"
+                  type="password"
+                  formControlName="confirmPassword"
+                  placeholder="Confirm new password"
+                  class="w-full rounded-xl border border-slate-200 px-4 py-3 pr-11 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                />
+
+                <button
+                  type="button"
+                  (click)="
+                    confirmPasswordInput.type =
+                      confirmPasswordInput.type === 'password' ? 'text' : 'password'
+                  "
+                  class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-slate-400 transition hover:text-slate-600"
+                >
+                  @if (confirmPasswordInput.type === 'password') {
+                    <lucide-icon [img]="Eye" class="size-5"></lucide-icon>
+                  } @else {
+                    <lucide-icon [img]="EyeOff" class="size-5"></lucide-icon>
+                  }
+                </button>
+              </div>
+
+              @if (
+                editForm.controls.confirmPassword.touched &&
+                editForm.controls.confirmPassword.hasError('passwordMismatch')
+              ) {
+                <p class="mt-1.5 text-xs text-red-500">Passwords do not match.</p>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex justify-end gap-3 border-t border-slate-200 pt-6">
+          <!-- Cancel -->
+          <button
+            type="button"
+            (click)="cancelEditing()"
+            [disabled]="isSaving"
+            class="cursor-pointer rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Cancel
+          </button>
+
+          <!-- Save -->
+          <button
+            type="submit"
+            [disabled]="isSaving"
+            class="cursor-pointer rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            @if (isSaving) {
+              Saving...
+            } @else {
+              Save Changes
+            }
+          </button>
+        </div>
+      </div>
+    </form>
+  }
+</div>

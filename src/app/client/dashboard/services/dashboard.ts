@@ -6,29 +6,39 @@ import { ApiResponse } from '../../../shared/models/api-response.model';
 import { Student } from '../../../shared/models/student.model';
 import { LessonProgress } from '../../../shared/models/lesson-progress.model';
 import { Enrollment } from '../../../shared/models/enrollment.model';
+import { UpdateProfile } from '../../../shared/models/update-profile.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DashboardService {
-  private readonly http = inject(HttpClient)
-  private readonly apiUrl = `${environment.api_url}`
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = `${environment.api_url}`;
 
   getProfile(): Observable<ApiResponse<Student>> {
-    return this.http.get<ApiResponse<Student>>(
-      `${this.apiUrl}/students/profile`,
+    return this.http.get<ApiResponse<Student>>(`${this.apiUrl}/students/profile`);
+  }
+
+  updateProfile(data: Partial<UpdateProfile>): Observable<ApiResponse<Student>> {
+    return this.http.patch<ApiResponse<Student>>(`${this.apiUrl}/students/profile`, data);
+  }
+
+  uploadAvatar(file: File): Observable<ApiResponse<Student>> {
+    const formData = new FormData();
+
+    formData.append('avatar', file);
+
+    return this.http.patch<ApiResponse<Student>>(
+      `${this.apiUrl}/students/profile/avatar`,
+      formData,
     );
   }
 
   getEnrollments(): Observable<ApiResponse<Enrollment[]>> {
-    return this.http.get<ApiResponse<Enrollment[]>>(
-      `${this.apiUrl}/enrollments/me`,
-    );
+    return this.http.get<ApiResponse<Enrollment[]>>(`${this.apiUrl}/enrollments/me`);
   }
 
   getLessonProgress(): Observable<ApiResponse<LessonProgress[]>> {
-    return this.http.get<ApiResponse<LessonProgress[]>>(
-      `${this.apiUrl}/lesson-progress/me`,
-    );
+    return this.http.get<ApiResponse<LessonProgress[]>>(`${this.apiUrl}/lesson-progress/me`);
   }
 }
