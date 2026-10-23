@@ -6,34 +6,22 @@ export const CLIENT_ROUTES: Routes = [
   // Auth pages
   {
     path: 'login',
-    loadComponent: () =>
-      import('./auth/auth-layout/auth-layout').then(
-        (m) => m.AuthLayout,
-      ),
+    loadComponent: () => import('./auth/auth-layout/auth-layout').then((m) => m.AuthLayout),
     children: [
       {
         path: '',
-        loadComponent: () =>
-          import('./auth/pages/login/login').then(
-            (m) => m.Login,
-          ),
+        loadComponent: () => import('./auth/pages/login/login').then((m) => m.Login),
       },
     ],
   },
 
   {
     path: 'register',
-    loadComponent: () =>
-      import('./auth/auth-layout/auth-layout').then(
-        (m) => m.AuthLayout,
-      ),
+    loadComponent: () => import('./auth/auth-layout/auth-layout').then((m) => m.AuthLayout),
     children: [
       {
         path: '',
-        loadComponent: () =>
-          import('./auth/pages/register/register').then(
-            (m) => m.Register,
-          ),
+        loadComponent: () => import('./auth/pages/register/register').then((m) => m.Register),
       },
     ],
   },
@@ -42,10 +30,7 @@ export const CLIENT_ROUTES: Routes = [
   {
     path: 'courses/:courseId/learn/:lessonId',
     canActivate: [authGuard],
-    loadComponent: () =>
-      import('./learning/pages/learn/learn').then(
-        (m) => m.Learn,
-      ),
+    loadComponent: () => import('./learning/pages/learn/learn').then((m) => m.Learn),
   },
 
   // Public pages
@@ -55,24 +40,36 @@ export const CLIENT_ROUTES: Routes = [
     children: [
       {
         path: '',
-        loadComponent: () =>
-          import('./home/pages/home/home').then(
-            (m) => m.Home,
-          ),
+        loadComponent: () => import('./home/pages/home/home').then((m) => m.Home),
       },
       {
         path: 'courses',
         loadComponent: () =>
-          import('./courses/pages/course-list/course-list').then(
-            (m) => m.CourseList,
-          ),
+          import('./courses/pages/course-list/course-list').then((m) => m.CourseList),
       },
       {
         path: 'courses/:id',
         loadComponent: () =>
-          import('./courses/pages/course-detail/course-detail').then(
-            (m) => m.CourseDetail,
-          ),
+          import('./courses/pages/course-detail/course-detail').then((m) => m.CourseDetail),
+      },
+
+      // Student pages
+      {
+        path: 'dashboard',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./dashboard/pages/dashboard/dashboard').then((m) => m.Dashboard),
+      },
+      {
+        path: 'my-courses',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./my-courses/pages/my-courses/my-courses').then((m) => m.MyCourses),
+      },
+      {
+        path: 'profile',
+        canActivate: [authGuard],
+        loadComponent: () => import('./profile/pages/profile/profile').then((m) => m.Profile),
       },
     ],
   },

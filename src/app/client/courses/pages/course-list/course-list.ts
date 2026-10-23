@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CourseService } from '../../services/course';
 import { Course } from '../../../../shared/models/course.model';
 import { RouterLink } from '@angular/router';
-import { ArrowUpRight, BookOpenCheck, Clock, LucideAngularModule } from 'lucide-angular';
+import { ArrowRight, ArrowUpRight, BookOpen, BookOpenCheck, CheckCircle2, Clock, LucideAngularModule, Play, TrendingUp } from 'lucide-angular';
 
 @Component({
   selector: 'app-course-list',
