@@ -1,10 +1,4 @@
-export interface CourseCategory {
-  id: string;
-  name: string;
-  description: string;
-  created_at: string;
-  updated: string;
-}
+import { Category } from "./category.model";
 
 export interface Course {
   id: string;
@@ -20,5 +14,5 @@ export interface Course {
   lesson_count: number;
   created_at: string;
   updated_at: string;
-  category: CourseCategory;
+  category: Category;
 }
