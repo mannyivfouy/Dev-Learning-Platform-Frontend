@@ -12,6 +12,8 @@ import {
 } from 'lucide-angular';
 import { LessonService } from '../../../learning/services/lesson';
 import { Lesson } from '../../../../shared/models/lesson.model';
+import { DashboardService } from '../../../dashboard/services/dashboard';
+import { PaymentService } from '../../../payments/services/payment';
 
 @Component({
   selector: 'app-course-detail',
@@ -20,21 +22,24 @@ import { Lesson } from '../../../../shared/models/lesson.model';
   styleUrl: './course-detail.css',
 })
 export class CourseDetail implements OnInit {
+  private readonly dashboardService = inject(DashboardService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly courseService = inject(CourseService);
+  private readonly lessonService = inject(LessonService);
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly paymentService = inject(PaymentService);
+
   readonly ArrowLeft = ArrowLeft;
   readonly BookOpenCheck = BookOpenCheck;
   readonly Clock = Clock;
   readonly CodeXml = CodeXml;
   readonly CreditCard = CreditCard;
 
-  private readonly route = inject(ActivatedRoute);
-  private readonly courseService = inject(CourseService);
-  private readonly lessonService = inject(LessonService);
-  private readonly cdr = inject(ChangeDetectorRef);
-
   course: Course | null = null;
   lessons: Lesson[] = [];
   isLoading = true;
   errorMessage = '';
+  isPurchased = false;
 
   ngOnInit(): void {
     const courseId = this.route.snapshot.paramMap.get('id');
@@ -47,6 +52,7 @@ export class CourseDetail implements OnInit {
 
     this.loadCourse(courseId);
     this.loadLessons(courseId);
+    this.checkPurchaseStatus(courseId);
   }
 
   private loadCourse(id: string): void {
@@ -73,6 +79,32 @@ export class CourseDetail implements OnInit {
       },
       error: (error) => {
         console.error('Failed to load lessons:', error);
+      },
+    });
+  }
+
+  private checkPurchaseStatus(courseId: string): void {
+    this.dashboardService.getEnrollments().subscribe({
+      next: (response) => {
+        this.isPurchased = response.data.some(
+          (enrollment) => enrollment.course_id === courseId && enrollment.status === 'active',
+        );
+
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Failed to check purchase status:', error);
+      },
+    });
+  }
+
+  getCourse(courseId: string): void {
+    this.paymentService.createCourseCheckout(courseId).subscribe({
+      next: (response) => {
+        window.location.href = response.data.checkout_url;
+      },
+      error: (error) => {
+        console.error('Failed to create checkout:', error);
       },
     });
   }
