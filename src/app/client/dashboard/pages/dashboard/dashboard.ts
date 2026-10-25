@@ -10,20 +10,25 @@ import {
   BookOpenCheck,
   CheckCircle2,
   Clock,
+  CreditCard,
   LucideAngularModule,
   Play,
   TrendingUp,
 } from 'lucide-angular';
 import { RouterLink } from '@angular/router';
+import { Subscription } from '../../../../shared/models/subscription.model';
+import { CommonModule } from '@angular/common';
+import { PaymentService } from '../../../payments/services/payment';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [LucideAngularModule, RouterLink],
+  imports: [LucideAngularModule, RouterLink, CommonModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
 export class Dashboard implements OnInit {
   private readonly dashboardService = inject(DashboardService);
+  private readonly paymentService = inject(PaymentService);
   private readonly cdr = inject(ChangeDetectorRef);
 
   readonly ArrowRight = ArrowRight;
@@ -33,10 +38,13 @@ export class Dashboard implements OnInit {
   readonly Clock = Clock;
   readonly Play = Play;
   readonly TrendingUp = TrendingUp;
+  readonly CreditCard = CreditCard;
 
   student: Student | null = null;
   enrollments: Enrollment[] = [];
+  myLearning: any[] = [];
   lessonProgress: LessonProgress[] = [];
+  subscription: Subscription | null = null;
 
   isLoading = true;
   errorMessage = '';
@@ -52,12 +60,16 @@ export class Dashboard implements OnInit {
     forkJoin({
       profile: this.dashboardService.getProfile(),
       enrollments: this.dashboardService.getEnrollments(),
+      myLearning: this.dashboardService.getMyLearning(),
       progress: this.dashboardService.getLessonProgress(),
+      subscription: this.dashboardService.getMySubscription(),
     }).subscribe({
       next: (response) => {
         this.student = response.profile.data;
         this.enrollments = response.enrollments.data;
+        this.myLearning = response.myLearning.data;
         this.lessonProgress = response.progress.data;
+        this.subscription = response.subscription.data;
 
         this.completedLessonCount = this.lessonProgress.filter(
           (progress) => progress.is_complete,
@@ -122,5 +134,20 @@ export class Dashboard implements OnInit {
     const completedLessons = this.getCompletedLessons(courseId);
 
     return Math.round((completedLessons / totalLessons) * 100);
+  }
+
+  cancelSubscription(): void {
+    this.paymentService.cancelSubscription().subscribe({
+      next: (response) => {
+        console.log('Subscription cancelled:', response);
+
+        // Reload dashboard data so the UI reflects the new state
+        this.loadDashboard();
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Failed to cancel subscription:', error);
+      },
+    });
   }
 }

@@ -8,13 +8,21 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class PaymentService {
-  private readonly http = inject(HttpClient)
-  private readonly apiUrl = `${environment.api_url}/payments`
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = `${environment.api_url}/payments`;
 
   createCourseCheckout(courseId: string): Observable<CheckoutResponse> {
-    return this.http.post<CheckoutResponse>(
-      `${this.apiUrl}/checkout/course/${courseId}`,
-      {},
-    );
+    return this.http.post<CheckoutResponse>(`${this.apiUrl}/checkout/course/${courseId}`, {});
   }
+
+  createSubscriptionCheckout(): Observable<CheckoutResponse> {
+    return this.http.post<CheckoutResponse>(`${this.apiUrl}/checkout/subscription`, {});
+  }
+
+  cancelSubscription(): Observable<any> {
+  return this.http.post(
+    `${this.apiUrl}/subscription/cancel`,
+    {},
+  );
+}
 }

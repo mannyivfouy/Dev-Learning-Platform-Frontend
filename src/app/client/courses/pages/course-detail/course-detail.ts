@@ -84,16 +84,14 @@ export class CourseDetail implements OnInit {
   }
 
   private checkPurchaseStatus(courseId: string): void {
-    this.dashboardService.getEnrollments().subscribe({
+    this.dashboardService.getMyLearning().subscribe({
       next: (response) => {
-        this.isPurchased = response.data.some(
-          (enrollment) => enrollment.course_id === courseId && enrollment.status === 'active',
-        );
+        this.isPurchased = response.data.some((learning) => learning.course.id === courseId);
 
         this.cdr.detectChanges();
       },
       error: (error) => {
-        console.error('Failed to check purchase status:', error);
+        console.error('Failed to check course access:', error);
       },
     });
   }
