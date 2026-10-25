@@ -7,6 +7,7 @@ import { Student } from '../../../shared/models/student.model';
 import { LessonProgress } from '../../../shared/models/lesson-progress.model';
 import { Enrollment } from '../../../shared/models/enrollment.model';
 import { UpdateProfile } from '../../../shared/models/update-profile.model';
+import { Subscription } from '../../../shared/models/subscription.model';
 
 @Injectable({
   providedIn: 'root',
@@ -34,8 +35,16 @@ export class DashboardService {
     );
   }
 
+  getMySubscription(): Observable<ApiResponse<Subscription | null>> {
+    return this.http.get<ApiResponse<Subscription | null>>(`${this.apiUrl}/subscriptions/me`);
+  }
+
   getEnrollments(): Observable<ApiResponse<Enrollment[]>> {
     return this.http.get<ApiResponse<Enrollment[]>>(`${this.apiUrl}/enrollments/me`);
+  }
+
+  getMyLearning(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/enrollments/my-learning`);
   }
 
   getLessonProgress(): Observable<ApiResponse<LessonProgress[]>> {

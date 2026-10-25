@@ -40,6 +40,7 @@ import {
   siTypescript,
 } from 'simple-icons';
 import { AuthService } from '../../../../core/services/auth';
+import { PaymentService } from '../../../payments/services/payment';
 
 @Component({
   selector: 'app-home',
@@ -49,6 +50,7 @@ import { AuthService } from '../../../../core/services/auth';
 })
 export class Home {
   private readonly authService = inject(AuthService);
+  private readonly paymentService = inject(PaymentService);
 
   readonly ArrowRight = ArrowRight;
   readonly BookOpen = BookOpen;
@@ -90,45 +92,21 @@ export class Home {
     { name: 'Git', icon: siGit },
     { name: 'GitHub', icon: siGithub },
     { name: 'Docker', icon: siDocker },
-    { name: 'MySQL', icon: siMysql }
+    { name: 'MySQL', icon: siMysql },
   ];
 
   get isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
   }
 
-  courses = [
-    {
-      id: 1,
-      title: 'Angular Fundamentals',
-      description:
-        'Learn the fundamentals of Angular and build modern, responsive web applications.',
-      level: 'Beginner',
-      lessons: 18,
-      duration: '8 hours',
-      category: 'Frontend',
-      icon: 'A',
-    },
-    {
-      id: 2,
-      title: 'NestJS Backend Development',
-      description: 'Build scalable REST APIs using NestJS, TypeScript, PostgreSQL, and TypeORM.',
-      level: 'Intermediate',
-      lessons: 24,
-      duration: '12 hours',
-      category: 'Backend',
-      icon: 'N',
-    },
-    {
-      id: 3,
-      title: 'TypeScript Essentials',
-      description:
-        'Strengthen your TypeScript knowledge and write safer, cleaner application code.',
-      level: 'Beginner',
-      lessons: 16,
-      duration: '6 hours',
-      category: 'Programming',
-      icon: 'TS',
-    },
-  ];
+  startSubscriptionCheckout(): void {
+    this.paymentService.createSubscriptionCheckout().subscribe({
+      next: (response) => {
+        window.location.href = response.data.checkout_url;
+      },
+      error: (error) => {
+        console.error('Failed to create subscription checkout:', error);
+      },
+    });
+  }
 }

@@ -52,6 +52,10 @@ export const CLIENT_ROUTES: Routes = [
         loadComponent: () =>
           import('./courses/pages/course-detail/course-detail').then((m) => m.CourseDetail),
       },
+      {
+        path: 'pricing',
+        loadComponent: () => import('./pricing/pages/pricing/pricing').then((m) => m.Pricing)
+      },
 
       // Student pages
       {
